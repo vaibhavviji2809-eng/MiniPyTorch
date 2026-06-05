@@ -1,15 +1,8 @@
-# MiniTorch
+# MiniPyTorch
 
-A small from-scratch deep learning framework that supports:
+A from-scratch deep learning framework that implements tensors, autograd, layers, losses, and optimizers without importing PyTorch.
 
-- tensor arithmetic
-- computation graphs
-- reverse-mode autodiff
-- modules and layers
-- optimizers
-- runnable training examples
-
-Target usage:
+Final target usage:
 
 ```python
 from tensor.tensor import Tensor
@@ -22,10 +15,10 @@ loss.backward()
 print(w.grad)
 ```
 
-## Project Layout
+## Repository Structure
 
 ```text
-minitorch/
+MiniPyTorch/
 |- tensor/
 |  |- tensor.py
 |  |- ops.py
@@ -39,6 +32,7 @@ minitorch/
 |- optim/
 |  |- sgd.py
 |  `- adam.py
+|- datasets/
 |- examples/
 |  |- linear_regression.py
 |  |- xor.py
@@ -46,17 +40,17 @@ minitorch/
 `- tests/
 ```
 
-## Implemented Now
+## Implemented
 
-- tensor wrapper with `shape`, `requires_grad`, and `grad`
-- scalar, elementwise, reduction, and matrix operations
-- computation graph construction through tensor parents
-- reverse-mode autodiff with topological sorting
-- `relu`, `sigmoid`, and `tanh`
-- `Module`, `Linear`, and `Sequential`
-- `MSE`, binary cross entropy, and multiclass cross entropy
-- `SGD` and `Adam`
-- linear regression and XOR training examples
+- tensor class with `shape`, `requires_grad`, and `grad`
+- arithmetic ops: `+`, `-`, `*`, `/`, `@`
+- computation graph via parent tracking
+- reverse-mode autograd with topological sorting
+- activations: `ReLU`, `Sigmoid`, `Tanh`
+- module system with `Module`, `Linear`, and `Sequential`
+- losses: `MSE`, binary cross entropy, multiclass cross entropy
+- optimizers: `SGD`, `Adam`
+- examples: linear regression and XOR
 
 ## Not Finished Yet
 
@@ -64,15 +58,15 @@ minitorch/
 - convolution and pooling layers
 - GPU backend
 
-## Run examples
+## Run Examples
 
 ```bash
-py minitorch/examples/linear_regression.py
-py minitorch/examples/xor.py
+py examples/linear_regression.py
+py examples/xor.py
 ```
 
-## Run tests
+## Run Tests
 
 ```bash
-py -m unittest discover minitorch/tests
+py -m unittest discover tests
 ```

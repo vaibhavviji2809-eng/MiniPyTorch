@@ -3,7 +3,7 @@ from __future__ import annotations
 import math
 import numpy as np
 
-from minitorch.tensor.tensor import Tensor
+from tensor.tensor import Tensor
 from .module import Module
 
 

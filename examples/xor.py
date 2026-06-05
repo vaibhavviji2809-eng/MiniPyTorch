@@ -5,16 +5,16 @@ import sys
 
 import numpy as np
 
-PROJECT_ROOT = Path(__file__).resolve().parents[2]
+PROJECT_ROOT = Path(__file__).resolve().parents[1]
 if str(PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(PROJECT_ROOT))
 
-from minitorch.nn.activations import ReLU, Sigmoid
-from minitorch.nn.linear import Linear
-from minitorch.nn.losses import binary_cross_entropy
-from minitorch.nn.module import Sequential
-from minitorch.optim.adam import Adam
-from minitorch.tensor.tensor import Tensor
+from nn.activations import ReLU, Sigmoid
+from nn.linear import Linear
+from nn.losses import binary_cross_entropy
+from nn.module import Sequential
+from optim.adam import Adam
+from tensor.tensor import Tensor
 
 
 def main() -> None:

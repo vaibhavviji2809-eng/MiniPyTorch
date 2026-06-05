@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import numpy as np
 
-from minitorch.tensor.tensor import Tensor
+from tensor.tensor import Tensor
 
 
 def mse_loss(pred: Tensor, target: Tensor) -> Tensor:

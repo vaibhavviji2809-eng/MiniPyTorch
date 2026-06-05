@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from minitorch.tensor.tensor import Tensor
+from tensor.tensor import Tensor
 
 
 class Module:

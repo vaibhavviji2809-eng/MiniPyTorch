@@ -4,9 +4,9 @@ import unittest
 
 import numpy as np
 
-from minitorch.tensor.tensor import Tensor
-from minitorch.nn.linear import Linear
-from minitorch.nn.losses import mse_loss
+from tensor.tensor import Tensor
+from nn.linear import Linear
+from nn.losses import mse_loss
 
 
 class TensorAutogradTests(unittest.TestCase):
