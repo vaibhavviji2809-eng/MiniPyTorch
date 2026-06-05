@@ -48,14 +48,15 @@ MiniPyTorch/
 - reverse-mode autograd with topological sorting
 - activations: `ReLU`, `Sigmoid`, `Tanh`
 - module system with `Module`, `Linear`, and `Sequential`
+- vision layers with `Conv2D` and `MaxPool2D`
 - losses: `MSE`, binary cross entropy, multiclass cross entropy
 - optimizers: `SGD`, `Adam`
 - examples: linear regression and XOR
+- CNN smoke example for future MNIST work
 
 ## Not Finished Yet
 
 - a real MNIST training example
-- convolution and pooling layers
 - GPU backend
 
 ## Run Examples

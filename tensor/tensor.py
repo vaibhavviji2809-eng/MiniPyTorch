@@ -322,5 +322,13 @@ class Tensor:
         out._backward = _backward
         return out
 
+    def flatten(self, start_dim: int = 1) -> "Tensor":
+        if start_dim < 0:
+            start_dim = self.ndim + start_dim
+        prefix = self.shape[:start_dim]
+        suffix = self.shape[start_dim:]
+        flattened = int(np.prod(suffix)) if suffix else 1
+        return self.reshape(*prefix, flattened)
+
     def backward(self, grad: Any | None = None) -> None:
         autograd_backward(self, grad=grad)

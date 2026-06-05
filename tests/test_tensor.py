@@ -4,6 +4,8 @@ import unittest
 
 import numpy as np
 
+from nn.conv import Conv2D
+from nn.pooling import MaxPool2D
 from tensor.tensor import Tensor
 from nn.linear import Linear
 from nn.losses import mse_loss
@@ -39,6 +41,31 @@ class TensorAutogradTests(unittest.TestCase):
 
         final_loss = mse_loss(layer(x), y).item()
         self.assertLess(final_loss, 1e-3)
+
+    def test_conv2d_output_shape_and_backward(self) -> None:
+        np.random.seed(0)
+        x = Tensor(np.random.randn(2, 1, 5, 5), requires_grad=True)
+        conv = Conv2D(1, 2, kernel_size=3, stride=1, padding=0)
+        out = conv(x)
+        self.assertEqual(out.shape, (2, 2, 3, 3))
+        loss = out.mean()
+        loss.backward()
+        self.assertEqual(x.grad.shape, x.shape)
+        self.assertEqual(conv.weight.grad.shape, conv.weight.shape)
+        self.assertEqual(conv.bias.grad.shape, conv.bias.shape)
+
+    def test_maxpool2d_output_shape_and_backward(self) -> None:
+        x = Tensor(
+            np.array([[[[1.0, 3.0, 2.0, 1.0], [4.0, 6.0, 5.0, 2.0], [1.0, 2.0, 9.0, 1.0], [0.0, 1.0, 3.0, 8.0]]]]),
+            requires_grad=True,
+        )
+        pool = MaxPool2D(kernel_size=2, stride=2)
+        out = pool(x)
+        np.testing.assert_allclose(out.data, np.array([[[[6.0, 5.0], [2.0, 9.0]]]]))
+        loss = out.sum()
+        loss.backward()
+        self.assertEqual(x.grad.shape, x.shape)
+        self.assertAlmostEqual(float(x.grad.sum()), 4.0, places=5)
 
 
 if __name__ == "__main__":
