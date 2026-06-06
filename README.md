@@ -27,16 +27,22 @@ MiniPyTorch/
 |- nn/
 |  |- module.py
 |  |- linear.py
+|  |- embedding.py
+|  |- norm.py
+|  |- transformer.py
 |  |- activations.py
 |  `- losses.py
 |- optim/
 |  |- sgd.py
 |  `- adam.py
 |- datasets/
+|  |- dataset.py
+|  `- char.py
 |- examples/
 |  |- linear_regression.py
 |  |- xor.py
-|  `- mnist.py
+|  |- mnist.py
+|  `- tiny_gpt.py
 `- tests/
 ```
 
@@ -49,10 +55,13 @@ MiniPyTorch/
 - activations: `ReLU`, `Sigmoid`, `Tanh`
 - module system with `Module`, `Linear`, and `Sequential`
 - vision layers with `Conv2D` and `MaxPool2D`
+- dataset and dataloader utilities
+- `Embedding`, `LayerNorm`, `MultiHeadAttention`, and `TransformerBlock`
 - losses: `MSE`, binary cross entropy, multiclass cross entropy
 - optimizers: `SGD`, `Adam`
 - examples: linear regression and XOR
 - CNN smoke example for future MNIST work
+- Tiny GPT training example
 
 ## Not Finished Yet
 

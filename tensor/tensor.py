@@ -181,9 +181,11 @@ class Tensor:
             if out.grad is None:
                 return
             if self.requires_grad:
-                self._add_grad(out.grad @ other.data.T)
+                grad_self = out.grad @ np.swapaxes(other.data, -1, -2)
+                self._add_grad(reduce_broadcasted_grad(grad_self, self.shape))
             if other.requires_grad:
-                other._add_grad(self.data.T @ out.grad)
+                grad_other = np.swapaxes(self.data, -1, -2) @ out.grad
+                other._add_grad(reduce_broadcasted_grad(grad_other, other.shape))
 
         out._backward = _backward
         return out
@@ -201,6 +203,25 @@ class Tensor:
             if out.grad is None or not self.requires_grad:
                 return
             self._add_grad(out.grad.T)
+
+        out._backward = _backward
+        return out
+
+    def transpose(self, *axes: int) -> "Tensor":
+        if not axes:
+            axes = tuple(reversed(range(self.ndim)))
+        out = Tensor(
+            np.transpose(self.data, axes=axes),
+            requires_grad=self.requires_grad,
+            parents=(self,),
+            op="transpose",
+        )
+
+        def _backward() -> None:
+            if out.grad is None or not self.requires_grad:
+                return
+            inverse = np.argsort(axes)
+            self._add_grad(np.transpose(out.grad, axes=inverse))
 
         out._backward = _backward
         return out
@@ -329,6 +350,11 @@ class Tensor:
         suffix = self.shape[start_dim:]
         flattened = int(np.prod(suffix)) if suffix else 1
         return self.reshape(*prefix, flattened)
+
+    def softmax(self, axis: int = -1) -> "Tensor":
+        shifted = self - Tensor(np.max(self.data, axis=axis, keepdims=True))
+        exp_values = shifted.exp()
+        return exp_values / exp_values.sum(axis=axis, keepdims=True)
 
     def backward(self, grad: Any | None = None) -> None:
         autograd_backward(self, grad=grad)

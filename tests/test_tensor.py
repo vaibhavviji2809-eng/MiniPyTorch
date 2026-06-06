@@ -5,7 +5,10 @@ import unittest
 import numpy as np
 
 from nn.conv import Conv2D
+from nn.embedding import Embedding
+from nn.norm import LayerNorm
 from nn.pooling import MaxPool2D
+from nn.transformer import MultiHeadAttention, TransformerBlock, TinyGPT
 from tensor.tensor import Tensor
 from nn.linear import Linear
 from nn.losses import mse_loss
@@ -66,6 +69,43 @@ class TensorAutogradTests(unittest.TestCase):
         loss.backward()
         self.assertEqual(x.grad.shape, x.shape)
         self.assertAlmostEqual(float(x.grad.sum()), 4.0, places=5)
+
+    def test_embedding_backward(self) -> None:
+        embedding = Embedding(8, 4)
+        token_ids = np.array([[1, 2, 1]])
+        out = embedding(token_ids)
+        loss = out.mean()
+        loss.backward()
+        self.assertEqual(embedding.weight.grad.shape, embedding.weight.shape)
+        self.assertGreater(np.abs(embedding.weight.grad[1]).sum(), 0)
+
+    def test_layernorm_shape(self) -> None:
+        x = Tensor(np.random.randn(2, 3, 4), requires_grad=True)
+        ln = LayerNorm(4)
+        out = ln(x)
+        self.assertEqual(out.shape, x.shape)
+        out.mean().backward()
+        self.assertEqual(x.grad.shape, x.shape)
+
+    def test_multihead_attention_shape(self) -> None:
+        x = Tensor(np.random.randn(2, 5, 8), requires_grad=True)
+        attn = MultiHeadAttention(d_model=8, num_heads=2)
+        out = attn(x)
+        self.assertEqual(out.shape, (2, 5, 8))
+        out.mean().backward()
+        self.assertEqual(x.grad.shape, x.shape)
+
+    def test_transformer_block_shape(self) -> None:
+        x = Tensor(np.random.randn(2, 6, 8), requires_grad=True)
+        block = TransformerBlock(d_model=8, num_heads=2, d_ff=16)
+        out = block(x)
+        self.assertEqual(out.shape, (2, 6, 8))
+
+    def test_tiny_gpt_logits_shape(self) -> None:
+        model = TinyGPT(vocab_size=20, block_size=8, d_model=16, num_heads=4, num_layers=1, d_ff=32)
+        tokens = np.random.randint(0, 20, size=(3, 8))
+        logits = model(tokens)
+        self.assertEqual(logits.shape, (3, 8, 20))
 
 
 if __name__ == "__main__":
